@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(54, 54, 54, 0.9);
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    background: rgba(100, 100, 100, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #eee;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgba(150, 150, 150, 0.8);
+    color: black;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.file-label:hover {
+    background-color: rgba(170, 170, 170, 0.8);
+}
+
+.file-container {
+    height: auto;
+    max-width: 1080px;
+    text-align: center;
+    background: rgba(100, 100, 100, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+#output {
+    max-width: 1080px;
+    max-height: 80vh;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-y: auto;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#output::-webkit-scrollbar {
+    display: none;
+}
