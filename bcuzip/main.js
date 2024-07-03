@@ -46,7 +46,6 @@ async function decryptFile(file) {
         );
 
         let infoText = infoAES.toString(CryptoJS.enc.Utf8);
-        console.log(infoText);
         infoText = infoText.substring(0, infoText.lastIndexOf('}') + 1);
         zip.file("info.json", infoText);
 
