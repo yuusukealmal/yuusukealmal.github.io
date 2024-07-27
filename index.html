@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+	<title>自用小工具</title>
+</head>
+
+<body>
+	<div class="theme-switcher">
+		<select id="theme" onchange="switchTheme()">
+			<option value="light">Light</option>
+			<option value="dark">Dark</option>
+			<option value="system">System</option>
+		</select>
+	</div>
+
+	<div class="container">
+		<div class="clock" id ="clock"></div>
+		<div class="dynamic" id="lines"></div>
+		<div class="nav-buttons">
+			<a href="./bcuzip/index.html">BCUzip parse</a>
+		</div>
+	</div>
+
+	<footer>
+		&copy; 就只是一個頁尾
+	</footer>
+
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+	<script type="text/javascript" src="https://api.xygeng.cn/openapi/one/"></script>
+	<script src="main.js"></script>
+	<script>
+		init();
+		updateClock();
+		getLineContent();
+
+		setInterval(updateClock, 1000);
+	</script>
+</body>
+
+</html>
