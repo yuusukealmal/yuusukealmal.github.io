@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BCUZIP dump</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <title>BCUZIP dump</title>
 </head>
 <body>
     <div class="container" id="fs">
@@ -21,8 +21,20 @@
         </div>
     </div>
 
+    <div class="theme-switcher">
+        <select id="theme" onchange="switchTheme()">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="system">System</option>
+        </select>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
     <script src="main.js"></script>
+
+    <script>
+        init();
+    </script>
 </body>
 </html>

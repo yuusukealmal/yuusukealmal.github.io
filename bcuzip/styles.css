@@ -1,3 +1,19 @@
+[data-theme='light'] {
+    --bg-color: rgba(54, 54, 54, 0.9);
+    --text-color: white;
+    --link-color: lightblue;
+    --button-bg: rgba(150, 150, 150, 0.8);
+    --button-text: black;
+    --button-hover-bg: rgba(170, 170, 170, 0.8);
+}
+[data-theme='dark'] {
+    --bg-color: black;
+    --text-color: white;
+    --link-color: lightblue;
+    --button-bg: #333;
+    --button-text: white;
+    --button-hover-bg: #444;
+}
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -5,10 +21,26 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: rgba(54, 54, 54, 0.9);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
     margin: 0;
 }
-
+.theme-switcher {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+.theme-switcher select {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: 1px solid var(--text-color);
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
 .container {
     text-align: center;
     background: rgba(100, 100, 100, 0.8);
@@ -20,7 +52,7 @@ body {
 
 h1 {
     margin-bottom: 20px;
-    color: #eee;
+    color: var(--text-color);
 }
 
 .file-input {
@@ -30,15 +62,16 @@ h1 {
 .file-label {
     display: inline-block;
     padding: 10px 20px;
-    background-color: rgba(150, 150, 150, 0.8);
-    color: black;
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .file-label:hover {
-    background-color: rgba(170, 170, 170, 0.8);
+    background-color: var(--button-hover-bg);
+    transform: scale(1.05);
 }
 
 .file-container {
@@ -60,7 +93,6 @@ h1 {
     overflow-y: auto;
     text-overflow: ellipsis;
     white-space: nowrap;
-
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
