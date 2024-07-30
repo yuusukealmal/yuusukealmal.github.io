@@ -75,7 +75,7 @@ async function getToken() {
 
 async function getVoiceInfo(voiceID) {
     const response = await axios.get(
-        `https://api.asmr.one/api/work/${voiceID}`,
+        `${corsProxy}https://api.asmr.one/api/work/${voiceID}`,
         {
             headers: headers,
             timeout: 120
@@ -86,7 +86,7 @@ async function getVoiceInfo(voiceID) {
 
 async function getTreackInfo(voiceID) {
     const response = await axios.get(
-        `https://api.asmr.one/api/tracks/${voiceID}`,
+        `${corsProxy}https://api.asmr.one/api/tracks/${voiceID}`,
         {
             headers: headers,
             timeout: 120
@@ -120,9 +120,10 @@ async function scan(tracks, current_path, zip) {
 async function downloadFile(url, path, filename, zip) {
     console.log(`Downloading ${path}/${filename}...`);
     try {
-        const response = await axios.get(url, {
-            headers: headers,
-            responseType: 'stream'
+        const response = await axios.get(
+            `${corsProxy}${url}`, {
+                headers: headers,
+                responseType: 'stream'
         });
 
         const chunks = [];
