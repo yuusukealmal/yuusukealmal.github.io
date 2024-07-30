@@ -169,7 +169,7 @@ async function downloadZip(content, dir, callback) {
     callback();
 }
 
-async function quere(RJCodes) {
+async function queue(RJCodes) {
     const RJs = RJCodes.split(" ");
     await getToken();
     let processedFilesCount = 0;
@@ -195,6 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('check-button').addEventListener('click', async (event) => {
         event.preventDefault();
         const RJs = document.getElementById('RJCodes').value;
-        await quere(RJs);
+        await queue(RJs);
     });
 })
