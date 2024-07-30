@@ -76,8 +76,10 @@ async function getToken() {
 async function getVoiceInfo(voiceID) {
     const response = await axios.get(
         `https://api.asmr.one/api/work/${voiceID}`,
-        Headers = headers,
-        timeout = 120
+        {
+            headers: headers,
+            timeout: 120
+        }
     );
     return response.status === 200 ? response.data : null;
 }
@@ -85,8 +87,10 @@ async function getVoiceInfo(voiceID) {
 async function getTreackInfo(voiceID) {
     const response = await axios.get(
         `https://api.asmr.one/api/tracks/${voiceID}`,
-        Headers = headers,
-        timeout = 120
+        {
+            headers: headers,
+            timeout: 120
+        }
     );
     return JSON.parse(JSON.stringify(response.data));
 }
@@ -98,6 +102,49 @@ async function downloadRJS(RJCodes, zip, callback) {
     await scan(tracks, "RJ" + RJCodes, zip);
 
     await downloadZip(zip.generate({ type: "blob" }), "RJ" + RJCodes, callback);
+}
+
+async function scan(tracks, current_path, zip) {
+    for (const item of tracks) {
+        if ("type" in item) {
+            if (item.type === "folder") {
+                const folder_path = `${current_path}/${item.title}`;
+                await scan(item.children, folder_path, zip);
+            } else {
+                await downloadFile(item.mediaDownloadUrl, current_path, item.title, zip);
+            }
+        }
+    }
+}
+
+async function downloadFile(url, path, filename, zip) {
+    console.log(`Downloading ${path}/${filename}...`);
+    try {
+        const response = await axios.get(url, {
+            headers: headers,
+            responseType: 'stream'
+        });
+
+        const chunks = [];
+        return new Promise((resolve, reject) => {
+            response.data.on('data', (chunk) => {
+                chunks.push(chunk);
+            });
+
+            response.data.on('end', () => {
+                const buffer = Buffer.concat(chunks);
+                zip.file(`${path}/${filename}`, buffer);
+                resolve();
+            });
+
+            response.data.on('error', (err) => {
+                reject(err);
+            });
+        });
+    } catch (error) {
+        console.error('Error downloading file: ', error);
+        throw error;
+    }
 }
 
 async function downloadZip(content, dir, callback) {
