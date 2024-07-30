@@ -48,10 +48,12 @@ function init() {
 }
 
 
-var headers = {
-    "Referer": 'https://www.asmr.one/',
-    "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-};
+// var headers = {
+//     "Referer": 'https://www.asmr.one/',
+//     "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+// };
+var headers = {};
+
 const corsProxy = 'https://cors-anywhere.herokuapp.com/';
 
 async function getToken() {
@@ -68,7 +70,6 @@ async function getToken() {
     );
 
     headers = {
-        ...headers,
         "Authorization": `Bearer ${response.data.token}`,
     };
 }
