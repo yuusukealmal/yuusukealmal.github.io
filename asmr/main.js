@@ -110,7 +110,7 @@ async function downloadRJS(RJCodes, zip, callback) {
     const tracks = await getTreackInfo(RJCodes);
     await scan(tracks, "RJ" + RJCodes, zip);
 
-    await downloadZip(zip.generate({ type: "blob" }), "RJ" + RJCodes, callback);
+    await downloadZip(zip, "RJ" + RJCodes, callback);
 }
 
 async function scan(tracks, current_path, zip) {
