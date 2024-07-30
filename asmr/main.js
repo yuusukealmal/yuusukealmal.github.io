@@ -85,7 +85,7 @@ async function getVoiceInfo(voiceID) {
     return response.status === 200 ? response.data : null;
 }
 
-async function getTreackInfo(voiceID) {
+async function getTrackInfo(voiceID) {
     const response = await axios.get(
         `${corsProxy}https://api.asmr.one/api/tracks/${voiceID}`,
         {
@@ -107,7 +107,7 @@ function printInfo(info) {
 async function downloadRJS(RJCodes, zip, callback) {
     const info = await getVoiceInfo(RJCodes);
     printInfo(info);
-    const tracks = await getTreackInfo(RJCodes);
+    const tracks = await getTrackInfo(RJCodes);
     await scan(tracks, "RJ" + RJCodes, zip);
 
     await downloadZip(zip, "RJ" + RJCodes, callback);
@@ -197,4 +197,4 @@ document.addEventListener('DOMContentLoaded', () => {
         const RJs = document.getElementById('RJCodes').value;
         await queue(RJs);
     });
-})
+});
