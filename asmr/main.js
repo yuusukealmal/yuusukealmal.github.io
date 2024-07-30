@@ -52,10 +52,11 @@ var headers = {
     "Referer": 'https://www.asmr.one/',
     "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
 };
+const corsProxy = 'https://cors-anywhere.herokuapp.com/';
 
 async function getToken() {
     const response = await axios.post(
-        'https://api.asmr.one/api/auth/me',
+        `${corsProxy}https://api.asmr.one/api/auth/me`,
         {
             "name": "guest",
             "password": "guest"
