@@ -105,7 +105,6 @@ async function decryptFile(file, callback) {
             let infoText = infoAES.toString(CryptoJS.enc.Utf8);
             infoText = infoText.substring(0, infoText.lastIndexOf('}') + 1);
             zip.file("info.json", infoText);
-
             const info = JSON.parse(infoText);
             const dir = info.desc.names.dat[0].val || infoText.desc.id;
             const id = info.desc.id;
@@ -117,7 +116,7 @@ async function decryptFile(file, callback) {
             }
 
             const content = await zip.generateAsync({ type: 'blob' });
-            downloadZip(content, dir, callback);
+            await downloadZip(content, dir, callback);
         };
         reader.readAsArrayBuffer(file);
     } catch (e) {
@@ -154,7 +153,7 @@ async function processFile(file, packBytes, pad, key, iv, folder) {
     folder.file(name.replace("./", ""), res);
 }
 
-function downloadZip(content, dir, callback) {
+async function downloadZip(content, dir, callback) {
     const blob = new Blob([content]);
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
