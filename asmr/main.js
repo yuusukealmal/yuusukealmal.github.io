@@ -48,14 +48,17 @@ function init() {
 }
 
 
-var headers = {
-    "Referer": 'https://www.asmr.one/',
-    "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-};
+// var headers = {
+//     "Referer": 'https://www.asmr.one/',
+//     "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+// };
+var headers = {};
+
+const corsProxy = 'https://cors-anywhere.herokuapp.com/';
 
 async function getToken() {
     const response = await axios.post(
-        'https://api.asmr.one/api/auth/me',
+        `${corsProxy}https://api.asmr.one/api/auth/me`,
         {
             "name": "guest",
             "password": "guest"
@@ -67,40 +70,47 @@ async function getToken() {
     );
 
     headers = {
-        ...headers,
         "Authorization": `Bearer ${response.data.token}`,
     };
 }
 
 async function getVoiceInfo(voiceID) {
     const response = await axios.get(
-        `https://api.asmr.one/api/work/${voiceID}`,
+        `${corsProxy}https://api.asmr.one/api/work/${voiceID}`,
         {
             headers: headers,
-            timeout: 120
+            timeout: 120000
         }
     );
     return response.status === 200 ? response.data : null;
 }
 
-async function getTreackInfo(voiceID) {
+async function getTrackInfo(voiceID) {
     const response = await axios.get(
-        `https://api.asmr.one/api/tracks/${voiceID}`,
+        `${corsProxy}https://api.asmr.one/api/tracks/${voiceID}`,
         {
             headers: headers,
-            timeout: 120
+            timeout: 120000
         }
     );
     return JSON.parse(JSON.stringify(response.data));
 }
 
+function printInfo(info) {
+    console.log(`ID: ${info.id}`)
+    console.log(`標題: ${info.title}`)
+    console.log(`社團名: ${info.name}`)
+    console.log(`NSFW: ${info.nsfw}`)
+    console.log(`標籤: ${info.tags.map(tag => tag.name).join(', ')}`)
+}
+
 async function downloadRJS(RJCodes, zip, callback) {
     const info = await getVoiceInfo(RJCodes);
     printInfo(info);
-    const tracks = await getTreackInfo(RJCodes);
+    const tracks = await getTrackInfo(RJCodes);
     await scan(tracks, "RJ" + RJCodes, zip);
 
-    await downloadZip(zip.generate({ type: "blob" }), "RJ" + RJCodes, callback);
+    await downloadZip(zip, "RJ" + RJCodes, callback);
 }
 
 async function scan(tracks, current_path, zip) {
@@ -119,26 +129,25 @@ async function scan(tracks, current_path, zip) {
 async function downloadFile(url, path, filename, zip) {
     console.log(`Downloading ${path}/${filename}...`);
     try {
-        const response = await axios.get(url, {
-            headers: headers,
-            responseType: 'stream'
+        const response = await axios.get(
+            `${corsProxy}${url}`, {
+                headers: headers,
+                responseType: 'blob'
         });
 
-        const chunks = [];
-        return new Promise((resolve, reject) => {
-            response.data.on('data', (chunk) => {
-                chunks.push(chunk);
-            });
+        const blob = response.data;
 
-            response.data.on('end', () => {
-                const buffer = Buffer.concat(chunks);
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const buffer = e.target.result;
                 zip.file(`${path}/${filename}`, buffer);
                 resolve();
-            });
-
-            response.data.on('error', (err) => {
+            };
+            reader.onerror = (err) => {
                 reject(err);
-            });
+            };
+            reader.readAsArrayBuffer(blob);
         });
     } catch (error) {
         console.error('Error downloading file: ', error);
@@ -146,9 +155,9 @@ async function downloadFile(url, path, filename, zip) {
     }
 }
 
-async function downloadZip(content, dir, callback) {
-    const blob = new Blob([content]);
-    const url = URL.createObjectURL(blob);
+async function downloadZip(zip, dir, callback) {
+    const content = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(content);
     const a = document.createElement('a');
     a.href = url;
     a.download = `${dir}.zip`;
@@ -156,11 +165,10 @@ async function downloadZip(content, dir, callback) {
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
-
     callback();
 }
 
-async function quere(RJCodes) {
+async function queue(RJCodes) {
     const RJs = RJCodes.split(" ");
     await getToken();
     let processedFilesCount = 0;
@@ -186,6 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('check-button').addEventListener('click', async (event) => {
         event.preventDefault();
         const RJs = document.getElementById('RJCodes').value;
-        await quere(RJs);
+        await queue(RJs);
     });
-})
+});
