@@ -79,7 +79,7 @@ async function getVoiceInfo(voiceID) {
         `${corsProxy}https://api.asmr.one/api/work/${voiceID}`,
         {
             headers: headers,
-            timeout: 120
+            timeout: 120000
         }
     );
     return response.status === 200 ? response.data : null;
@@ -90,7 +90,7 @@ async function getTreackInfo(voiceID) {
         `${corsProxy}https://api.asmr.one/api/tracks/${voiceID}`,
         {
             headers: headers,
-            timeout: 120
+            timeout: 120000
         }
     );
     return JSON.parse(JSON.stringify(response.data));
