@@ -132,24 +132,22 @@ async function downloadFile(url, path, filename, zip) {
         const response = await axios.get(
             `${corsProxy}${url}`, {
                 headers: headers,
-                responseType: 'stream'
+                responseType: 'blob'
         });
 
-        const chunks = [];
-        return new Promise((resolve, reject) => {
-            response.data.on('data', (chunk) => {
-                chunks.push(chunk);
-            });
+        const blob = response.data;
 
-            response.data.on('end', () => {
-                const buffer = Buffer.concat(chunks);
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const buffer = e.target.result;
                 zip.file(`${path}/${filename}`, buffer);
                 resolve();
-            });
-
-            response.data.on('error', (err) => {
+            };
+            reader.onerror = (err) => {
                 reject(err);
-            });
+            };
+            reader.readAsArrayBuffer(blob);
         });
     } catch (error) {
         console.error('Error downloading file: ', error);
