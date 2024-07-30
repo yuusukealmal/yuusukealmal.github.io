@@ -67,47 +67,79 @@ async function getToken() {
         timeout = 120
     );
 
-    headers |= {
-        "Authorization": `${response.data.token}`,
-    }
+    headers = {
+        ...headers,
+        "Authorization": `Bearer ${response.data.token}`,
+    };
 }
 
 async function getVoiceInfo(voiceID) {
-
     const response = await axios.get(
         `https://api.asmr.one/api/work/${voiceID}`,
         Headers = headers,
         timeout = 120
     );
-    if (response.status === 200) {
-        return JSON.stringify(response.data)
-    } else if (response.status === 404) {
-        
-    }
+    return response.status === 200 ? response.data : null;
 }
 
 async function getTreackInfo(voiceID) {
-
     const response = await axios.get(
         `https://api.asmr.one/api/tracks/${voiceID}`,
         Headers = headers,
         timeout = 120
     );
-    JSON.stringify(response.data)
+    return JSON.parse(JSON.stringify(response.data));
 }
 
-async function downloadRJS(RJCodes) {
-    const RJs = RJCodes.split(" ").split("RJ")[1];
-    headers = await getToken();
-    RJs.forEach(element => {
-        
-    });
+async function downloadRJS(RJCodes, zip, callback) {
+    const info = await getVoiceInfo(RJCodes);
+    printInfo(info);
+    const tracks = await getTreackInfo(RJCodes);
+    await scan(tracks, "RJ" + RJCodes, zip);
+
+    await downloadZip(zip.generate({ type: "blob" }), "RJ" + RJCodes, callback);
+}
+
+async function downloadZip(content, dir, callback) {
+    const blob = new Blob([content]);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${dir}.zip`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+
+    callback();
+}
+
+async function quere(RJCodes) {
+    const RJs = RJCodes.split(" ");
+    await getToken();
+    let processedFilesCount = 0;
+
+    for (const RJ of RJs) {
+        const zip = new JSZip();
+        const parts = RJ.split("RJ");
+        const RJId = parts.length > 1 ? parts[1] : RJ;
+
+        await downloadRJS(RJId, zip, () => {
+            processedFilesCount++;
+            if (processedFilesCount === RJs.length) {
+                console.log(`Downloaded ${RJs.length} files successfully.`);
+                setTimeout(() => {
+                    location.reload();
+                }, 3000);
+            }
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('check-button').addEventListener('click', async (event) => {
         event.preventDefault();
         const RJs = document.getElementById('RJCodes').value;
-        await downloadRJS(RJs);
+        await quere(RJs);
     });
 })
