@@ -96,6 +96,14 @@ async function getTreackInfo(voiceID) {
     return JSON.parse(JSON.stringify(response.data));
 }
 
+function printInfo(info) {
+    console.log(`ID: ${info.id}`)
+    console.log(`標題: ${info.title}`)
+    console.log(`社團名: ${info.name}`)
+    console.log(`NSFW: ${info.nsfw}`)
+    console.log(`標籤: ${info.tags.map(tag => tag.name).join(', ')}`)
+}
+
 async function downloadRJS(RJCodes, zip, callback) {
     const info = await getVoiceInfo(RJCodes);
     printInfo(info);
