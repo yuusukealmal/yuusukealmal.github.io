@@ -155,9 +155,9 @@ async function downloadFile(url, path, filename, zip) {
     }
 }
 
-async function downloadZip(content, dir, callback) {
-    const blob = new Blob([content]);
-    const url = URL.createObjectURL(blob);
+async function downloadZip(zip, dir, callback) {
+    const content = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(content);
     const a = document.createElement('a');
     a.href = url;
     a.download = `${dir}.zip`;
@@ -165,7 +165,6 @@ async function downloadZip(content, dir, callback) {
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
-
     callback();
 }
 
