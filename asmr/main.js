@@ -60,11 +60,10 @@ async function getToken() {
             "name": "guest",
             "password": "guest"
         },
-        Headers = {
-            "Referer": 'https://www.asmr.one/',
-            "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
-        },
-        timeout = 120
+        {
+            headers,
+            timeout: 120000
+        }
     );
 
     headers = {
